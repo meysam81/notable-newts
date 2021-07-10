@@ -1,17 +1,30 @@
 # Import from modules
 import time
+import asciimatics
 
 from asciimatics.screen import Screen
 
 # Player class
 class Player:
+    """
+    A class for the player
+    """
     def __init__(self):
+        """
+        Init method for the player
+        Stores the coordinates and player symbol
+        """
         # Player coordinates
         self.x = 0
         self.y = 0
         self.symbol = "."
 
-    def move(self, direction):
+    def move(self, direction: str) -> None:
+        """
+        :arg direction: The direction for the player to move
+        Changes the players coordinates depending
+        on the given direction
+        """
         # Each movement direction
         if direction == "R":
             self.x += 1
@@ -22,12 +35,20 @@ class Player:
         elif direction == "D":
             self.y += 1
 
-    def draw(self, screen):
+    def draw(self, screen: asciimatics.screen._WindowsScreen) -> None:
+        """
+        :arg screen: The screen to draw the player to
+        Shows the player on the screen at the stored coordinates
+        """
         # Draw player to screen
         screen.print_at(self.symbol, self.x, self.y)
 
 
-def demo(screen):
+def game(screen: asciimatics.screen._WindowsScreen) -> None:
+    """
+    :arg screen: The screen to draw to
+    Performs the game loop
+    """
     # Initialise player class
     player = Player()
 
@@ -60,8 +81,9 @@ def demo(screen):
         # Wait for next loop
         time.sleep(0.5)
 
+
 # Movement list
 movement = ["D", "R", "L", "U"]
 
 # Run screen
-Screen.wrapper(demo)
+Screen.wrapper(game)
