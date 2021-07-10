@@ -6,12 +6,11 @@ from asciimatics.screen import Screen
 
 # Player class
 class Player:
-    """
-    A class for the player
-    """
+    """A class for the player"""
+    
     def __init__(self):
-        """
-        Init method for the player
+        """Init method for the player
+
         Stores the coordinates and player symbol
         """
         # Player coordinates
@@ -20,7 +19,8 @@ class Player:
         self.symbol = "."
 
     def move(self, direction: str) -> None:
-        """
+        """Handles movement
+
         :arg direction: The direction for the player to move
         Changes the players coordinates depending
         on the given direction
@@ -36,7 +36,8 @@ class Player:
             self.y += 1
 
     def draw(self, screen: asciimatics.screen._WindowsScreen) -> None:
-        """
+        """Handles drawing player
+
         :arg screen: The screen to draw the player to
         Shows the player on the screen at the stored coordinates
         """
@@ -45,7 +46,8 @@ class Player:
 
 
 def game(screen: asciimatics.screen._WindowsScreen) -> None:
-    """
+    """Handles game
+
     :arg screen: The screen to draw to
     Performs the game loop
     """
