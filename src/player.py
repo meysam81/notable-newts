@@ -12,6 +12,7 @@ if sys.platform == "win32":
 else:
     win_type = asciimatics.screen._CursesScreen
 
+
 # Constants
 SPEED = 0.2
 
@@ -132,6 +133,7 @@ def game(screen: win_type) -> None:
             break
 
         time.sleep(0.5)
+
 
 # Run screen
 Screen.wrapper(game)
