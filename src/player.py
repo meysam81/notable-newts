@@ -2,7 +2,9 @@
 import sys
 import time
 
+# Import from asciimatics
 import asciimatics
+from asciimatics.event import KeyboardEvent
 from asciimatics.screen import Screen
 
 if sys.platform == "win32":
@@ -10,6 +12,8 @@ if sys.platform == "win32":
 else:
     win_type = asciimatics.screen._CursesScreen
 
+# Constants
+SPEED = 0.2
 
 # Player class
 class Player:
@@ -23,7 +27,9 @@ class Player:
         # Player coordinates
         self.x = 0
         self.y = 0
-        self.symbol = "."
+
+        # Player symbol
+        self.symbol = "o"
 
     def move(self, direction: str) -> None:
         """Handles movement
@@ -52,6 +58,51 @@ class Player:
         screen.print_at(self.symbol, self.x, self.y)
 
 
+def get_movement(screen: win_type) -> list:
+    """Gets the moves from the player
+
+    :arg screen: The screen to show the moves list on
+    Uses get event to grab key inputs from the user and
+    combines into a list
+    """
+    # Dictionary for key values and names of keys
+    move_set = {-203: "L", -204: "U", -205: "R", -206: "D"}
+    fancy_names = {"L": "Left", "U": "Up", "R": "Right", "D": "Down"}
+
+    # List for key inputs
+    movement = []
+
+    # Loop for getting input keys
+    while 1:
+        # Get event
+        event = screen.get_event()
+
+        # If an event occurrs and it is a keyboard event
+        if event is not None and type(event) == KeyboardEvent:
+
+            # Quit if q pressed
+            if event.key_code in (ord("q"), ord("Q")):
+                return movement
+
+            # Add movement if arrow keys pressed
+            elif event.key_code in move_set:
+                movement.append(move_set[event.key_code])
+
+        # If list longer than screen, start later
+        if len(movement) < 31:
+            start = 0
+        else:
+            start = len(movement)-30
+
+        # Show the inputs
+        for i, move in enumerate(movement[start:]):
+            screen.print_at(fancy_names[move], 1, i)
+
+        # Show new movement and clear screen buffer after
+        screen.refresh()
+        screen.clear_buffer(0, 1, 0)
+
+
 def game(screen: win_type) -> None:
     """Handles game
 
@@ -61,38 +112,26 @@ def game(screen: win_type) -> None:
     # Initialise player class
     player = Player()
 
-    # Variable to keep track of place in movement list
-    j = 0
+    # Grab moves from player
+    moves = get_movement(screen)
 
     # Game loop
-    while 1:
+    for j in range(len(moves)):
         # Move the player
-        player.move(movement[j])
+        player.move(moves[j])
 
         # Show the player
         player.draw(screen)
 
-        # Get keys pressed and quit if q pressed
-        ev = screen.get_key()
-        if ev in (ord('Q'), ord('q')):
-            return
+        time.sleep(SPEED)
 
-        # Update place in list
-        j += 1
-        j %= 4
+    # Causes program to stay open until q key pressed
+    while 1:
+        event = screen.get_event()
+        if event is not None and type(event) == KeyboardEvent and event.key_code in (ord("q"), ord("Q")):
+            break
 
-        # Show changes in screen
-        screen.refresh()
-
-        # Clear screen
-        screen.clear_buffer(0, 1, 0)
-
-        # Wait for next loop
         time.sleep(0.5)
-
-
-# Movement list
-movement = ["D", "R", "L", "U"]
 
 # Run screen
 Screen.wrapper(game)
