@@ -1,13 +1,14 @@
-# Import from modules
+# Import module
 import time
-import asciimatics
 
+import asciimatics
 from asciimatics.screen import Screen
+
 
 # Player class
 class Player:
     """A class for the player"""
-    
+
     def __init__(self):
         """Init method for the player
 
@@ -56,12 +57,12 @@ def game(screen: asciimatics.screen._WindowsScreen) -> None:
 
     # Variable to keep track of place in movement list
     j = 0
-    
+
     # Game loop
     while 1:
         # Move the player
         player.move(movement[j])
-        
+
         # Show the player
         player.draw(screen)
 
