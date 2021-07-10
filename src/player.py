@@ -15,6 +15,7 @@ else:
 # Constants
 SPEED = 0.2
 
+
 # Player class
 class Player:
     """A class for the player"""
@@ -132,6 +133,7 @@ def game(screen: win_type) -> None:
             break
 
         time.sleep(0.5)
+
 
 # Run screen
 Screen.wrapper(game)
