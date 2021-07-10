@@ -12,9 +12,9 @@ if sys.platform == "win32":
 else:
     win_type = asciimatics.screen._CursesScreen
 
-
 # Constants
 SPEED = 0.2
+
 
 # Player class
 class Player:
