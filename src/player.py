@@ -1,8 +1,14 @@
 # Import module
+import sys
 import time
 
 import asciimatics
 from asciimatics.screen import Screen
+
+if sys.platform == "win32":
+    win_type = asciimatics.screen._WindowsScreen
+else:
+    win_type = asciimatics.screen._CursesScreen
 
 
 # Player class
@@ -36,7 +42,7 @@ class Player:
         elif direction == "D":
             self.y += 1
 
-    def draw(self, screen: asciimatics.screen._WindowsScreen) -> None:
+    def draw(self, screen: win_type) -> None:
         """Handles drawing player
 
         :arg screen: The screen to draw the player to
@@ -46,7 +52,7 @@ class Player:
         screen.print_at(self.symbol, self.x, self.y)
 
 
-def game(screen: asciimatics.screen._WindowsScreen) -> None:
+def game(screen: win_type) -> None:
     """Handles game
 
     :arg screen: The screen to draw to
