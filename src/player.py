@@ -7,7 +7,6 @@ import asciimatics
 from asciimatics.event import KeyboardEvent
 from asciimatics.screen import Screen
 
-# Checks for current platform for correct type hinting later
 if sys.platform == "win32":
     win_type = asciimatics.screen._WindowsScreen
 else:
@@ -15,7 +14,6 @@ else:
 
 # Constants
 SPEED = 0.2
-
 
 # Player class
 class Player:
@@ -125,13 +123,6 @@ def game(screen: win_type) -> None:
         # Show the player
         player.draw(screen)
 
-        # Show changes in screen
-        screen.refresh()
-
-        # Clear screen
-        screen.clear_buffer(0, 1, 0)
-
-        # Wait for next loop
         time.sleep(SPEED)
 
     # Causes program to stay open until q key pressed
@@ -140,6 +131,7 @@ def game(screen: win_type) -> None:
         if event is not None and type(event) == KeyboardEvent and event.key_code in (ord("q"), ord("Q")):
             break
 
+        time.sleep(0.5)
 
 # Run screen
 Screen.wrapper(game)
