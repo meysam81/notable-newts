@@ -1,6 +1,6 @@
 # Import module
-import time
 import sys
+import time
 
 import asciimatics
 from asciimatics.screen import Screen
