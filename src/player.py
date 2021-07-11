@@ -123,7 +123,7 @@ def game(screen: win_type) -> None:
 
         # Show the player
         player.draw(screen)
-        
+
         # Show on screen
         screen.refresh()
         screen.clear_buffer(0, 1, 0)
