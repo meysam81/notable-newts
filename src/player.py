@@ -132,7 +132,6 @@ def get_movement(screen: win_type) -> list:
                 # Go function
                 elif selected == 2:
                     return movement
-                
 
         # If list longer than screen, start later
         if len(movement) <= screen.height:
@@ -145,8 +144,8 @@ def get_movement(screen: win_type) -> list:
             screen.print_at(fancy_names[move], 5, i)
 
         for i, text in enumerate(descriptions):
-            screen.print_at(text, screen.width-len(text)-5, i*10+1, attr=(i==selected)*3)
-        
+            screen.print_at(text, screen.width - len(text) - 5, i * 10 + 1, attr=(i == selected) * 3)
+
         # Show new movement and clear screen buffer after
         screen.refresh()
         screen.clear_buffer(0, 1, 0)
