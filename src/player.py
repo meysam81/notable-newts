@@ -7,6 +7,8 @@ import asciimatics
 from asciimatics.event import KeyboardEvent
 from asciimatics.screen import Screen
 
+
+# Detect platform for type hints
 if sys.platform == "win32":
     win_type = asciimatics.screen._WindowsScreen
 else:
@@ -90,10 +92,10 @@ def get_movement(screen: win_type) -> list:
                 movement.append(move_set[event.key_code])
 
         # If list longer than screen, start later
-        if len(movement) < 31:
+        if len(movement) <= screen.height:
             start = 0
         else:
-            start = len(movement)-30
+            start = len(movement)-screen.height
 
         # Show the inputs
         for i, move in enumerate(movement[start:]):
