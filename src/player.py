@@ -71,6 +71,15 @@ def get_movement(screen: win_type) -> list:
     move_set = {-203: "L", -204: "U", -205: "R", -206: "D"}
     fancy_names = {"L": "Left", "U": "Up", "R": "Right", "D": "Down"}
 
+    # Descriptions
+    undo_desc = "Undo (u)"
+    reset_desc = "Reset (r)"
+    go_desc = "Go (g)"
+
+    # Info about 'buttons'
+    descriptions = [undo_desc, reset_desc, go_desc]
+    selected = 0
+
     # List for key inputs
     movement = []
 
@@ -82,13 +91,48 @@ def get_movement(screen: win_type) -> list:
         # If an event occurrs and it is a keyboard event
         if event is not None and type(event) == KeyboardEvent:
 
-            # Quit if q pressed
-            if event.key_code in (ord("q"), ord("Q")):
+            # Go if g pressed
+            if event.key_code in (ord("g"), ord("G")):
                 return movement
 
             # Add movement if arrow keys pressed
             elif event.key_code in move_set:
                 movement.append(move_set[event.key_code])
+
+            # Undo function
+            elif event.key_code in (ord("u"), ord("U")):
+                if len(movement) > 0:
+                    movement.pop()
+
+            # Reset function to clear movement queue
+            elif event.key_code in (ord("r"), ord("R")):
+                movement = []
+
+            # Move up in buttons
+            elif event.key_code in (ord("w"), ord("W")):
+                selected -= 1
+                selected %= 3
+
+            # Move down in buttons
+            elif event.key_code in (ord("s"), ord("S")):
+                selected += 1
+                selected %= 3
+
+            # On enter key press, select current button
+            elif event.key_code == 13:
+                # Undo function
+                if selected == 0:
+                    if len(movement) > 0:
+                        movement.pop()
+
+                # Reset function
+                elif selected == 1:
+                    movement = []
+
+                # Go function
+                elif selected == 2:
+                    return movement
+                
 
         # If list longer than screen, start later
         if len(movement) <= screen.height:
@@ -98,8 +142,11 @@ def get_movement(screen: win_type) -> list:
 
         # Show the inputs
         for i, move in enumerate(movement[start:]):
-            screen.print_at(fancy_names[move], 1, i)
+            screen.print_at(fancy_names[move], 5, i)
 
+        for i, text in enumerate(descriptions):
+            screen.print_at(text, screen.width-len(text)-5, i*10+1, attr=(i==selected)*3)
+        
         # Show new movement and clear screen buffer after
         screen.refresh()
         screen.clear_buffer(0, 1, 0)
