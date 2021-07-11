@@ -7,7 +7,6 @@ import asciimatics
 from asciimatics.event import KeyboardEvent
 from asciimatics.screen import Screen
 
-
 # Detect platform for type hints
 if sys.platform == "win32":
     win_type = asciimatics.screen._WindowsScreen
