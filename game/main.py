@@ -1,5 +1,4 @@
 from contextlib import suppress
-from time import sleep
 from typing import Union
 
 from asciimatics.event import Event, KeyboardEvent
@@ -36,14 +35,13 @@ class Player:
 
 
 class Button:
+    """A class representing a button"""
+
     def __init__(self, label: str, enum: int, selected: bool = False):
         self.label = label
         self.enum = enum
 
         self.selected = selected
-
-    def render(self):
-        return self.label, self.selected
 
 
 class Game:
@@ -73,10 +71,10 @@ class Game:
 
     def _get_active_button(self, buttons: list) -> Union[Button, None]:
         buttons = [button for button in buttons if button.selected]
-        
+
         if buttons:
             return buttons[0]
-    
+
     def _get_moves(self) -> list:
         """Gets the moves the player wants to input"""
         _buttons = [
@@ -161,7 +159,7 @@ class Game:
 
         return _moves
 
-    def run(self, screen: Screen):
+    def run(self, screen: Screen) -> None:
         """Runs the game"""
         self.screen = screen
 
