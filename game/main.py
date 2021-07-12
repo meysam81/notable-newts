@@ -3,35 +3,7 @@ from typing import Union
 
 from asciimatics.event import Event, KeyboardEvent
 from asciimatics.screen import Screen
-
-
-class Player:
-    """A class representing the player"""
-
-    def __init__(self):
-        """Initiates a player"""
-        self.x = 0
-        self.y = 0
-
-        self.symbol = "o"
-
-    def move(self, direction: str) -> None:
-        """Moves the player"""
-        direction = direction.upper()
-
-        if direction == "U":
-            self.y += 1
-        elif direction == "D":
-            self.y -= 1
-        elif direction == "L":
-            self.x += 1
-        elif direction == "R":
-            self.x -= 1
-
-    def render(self, screen: Screen) -> None:
-        """Renders the player on the screen"""
-        screen.print_at(self.symbol, self.x, self.y)
-        screen.refresh()
+from level import Level
 
 
 class Button:
@@ -47,9 +19,7 @@ class Button:
 class Game:
     """A class that represents the game"""
 
-    def __init__(self, player: Player):
-        self.player = player
-
+    def __init__(self):
         self.screen: Union[Screen, None] = None
 
     def _get_letter_from_code(self, key_code: int) -> str:
@@ -103,7 +73,6 @@ class Game:
                     i,
                     attr=Screen.A_REVERSE if button.selected else 0,
                 )
-
             self.screen.refresh()
             self.screen.clear_buffer(0, 1, 0)
 
@@ -161,16 +130,15 @@ class Game:
 
     def run(self, screen: Screen) -> None:
         """Runs the game"""
+
         self.screen = screen
-
         moves = self._get_moves()
-
+        l1 = Level(self.screen)
+        l1.run(moves)
         print(moves)
 
 
 if __name__ == "__main__":
-    player = Player()
-
-    game = Game(player)
+    game = Game()
 
     Screen.wrapper(game.run)
