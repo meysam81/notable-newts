@@ -4,6 +4,7 @@ from typing import Union
 from asciimatics.event import Event, KeyboardEvent
 from asciimatics.screen import Screen
 from level import Level
+from mainMenu import mainMenuScene
 
 
 class Button:
@@ -130,8 +131,14 @@ class Game:
 
     def run(self, screen: Screen) -> None:
         """Runs the game"""
-
         self.screen = screen
+        scenes = []
+        main_menu_scene = mainMenuScene(self.screen)
+        scenes.append(main_menu_scene.getMenuScene())
+        # TODO: Here we need the get the scene for the input screen and the level screen
+        # so we can switch between them
+        screen.play(scenes, stop_on_resize=True, allow_int=True)
+
         moves = self._get_moves()
         l1 = Level(self.screen)
         l1.run(moves)

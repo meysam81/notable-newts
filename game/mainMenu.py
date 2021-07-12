@@ -1,7 +1,5 @@
-import sys
-
 from asciimatics.effects import Print
-from asciimatics.exceptions import ResizeScreenError, StopApplication
+from asciimatics.exceptions import StopApplication
 from asciimatics.renderers import ColourImageFile, FigletText
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
@@ -70,7 +68,6 @@ class mainMenuFrame(Frame):
         """
         When the player chooses play, start the game
         """
-        # TODO: start game
         pass
 
     def _levelSelect(self):
@@ -86,45 +83,29 @@ class mainMenuFrame(Frame):
         raise StopApplication("User pressed quit")
 
 
-def main_menu_effects(screen):
-    """
-    Get the effects for the main menu. This is the game name, logo and team name.
-    """
-    effects = [
-        Print(screen,
-              FigletText("Think inside the box", font='big'),
-              x=(screen.width - 90) // 2,
-              y=0,
-              colour=text_colour),
-        Print(screen,
-              ColourImageFile(screen, "newt.png", screen.height*5//6,
-                              uni=screen.unicode_aware,
-                              dither=False),
-              x=0,
-              y=screen.height//6,
-              stop_frame=False),
-        Print(screen,
-              FigletText("Notable\nNewts", font='small'),
-              x=screen.height * 9//12,
-              y=screen.height // 6 + int(screen.height * ((5/12) - (5*(1/7)/12))),
-              colour=text_colour)
-    ]
-    return effects
+class mainMenuScene:
+    def __init__(self, screen: Screen):
+        effects = [
+            Print(screen,
+                  FigletText("Think inside the box", font='big'),
+                  x=(screen.width - 90) // 2,
+                  y=0,
+                  colour=text_colour),
+            Print(screen,
+                  ColourImageFile(screen, "newt.png", screen.height*5//6,
+                                  uni=screen.unicode_aware,
+                                  dither=False),
+                  x=0,
+                  y=screen.height//6,
+                  stop_frame=False),
+            Print(screen,
+                  FigletText("Notable\nNewts", font='small'),
+                  x=screen.height * 9//12,
+                  y=screen.height // 6 + int(screen.height * ((5/12) - (5*(1/7)/12))),
+                  colour=text_colour)
+        ]
+        effects.append(mainMenuFrame(screen))
+        self.scene = Scene(effects=effects, duration=-1, name="mainMenu")
 
-
-def start_main_menu(screen):
-    """
-    Start up the main menu screen
-    """
-    effects = main_menu_effects(screen)
-    effects.append(mainMenuFrame(screen))
-    scenes = [Scene(effects=effects, duration=-1, name="Main")]
-    screen.play(scenes, stop_on_resize=True, allow_int=True)
-
-
-while True:
-    try:
-        Screen.wrapper(start_main_menu, catch_interrupt=True)
-        sys.exit(0)
-    except ResizeScreenError:
-        pass
+    def getMenuScene(self):
+        return self.scene
