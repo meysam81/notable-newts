@@ -1,20 +1,10 @@
 from time import sleep
-from typing import Any, List, Tuple
+from typing import List, Tuple
 
 from asciimatics.constants import COLOUR_RED
 from asciimatics.screen import Screen
 
 from player import Player
-
-
-class Tile:
-    """The tiles that levels are based on"""
-
-    def __init__(self, passable: bool = True, enemy: bool = False, terrain: Any = None):
-        # we could have different terrains like water to spice up the level design
-        self.passable = passable
-        self.enemy = enemy
-        self.terrain = terrain
 
 
 class Level:
@@ -29,7 +19,7 @@ class Level:
         self.player_y = self.height - 1 + self.y_pad
 
         self.path_taken: Tuple(int, int) = []
-        self.grid = [[Tile() for _ in range(self.width)] for __ in range(self.height)]
+        self.grid = [["" for _ in range(self.width)] for __ in range(self.height)]
         self.player = Player(self.player_x, self.player_y)
 
     def _draw_stage(self) -> None:
