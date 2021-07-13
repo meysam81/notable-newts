@@ -3,6 +3,8 @@ from typing import Union
 
 from asciimatics.event import Event, KeyboardEvent
 from asciimatics.screen import Screen
+
+from constants import ControlButtons, Directions
 from level import Level
 
 
@@ -25,13 +27,13 @@ class Game:
     def _get_letter_from_code(self, key_code: int) -> str:
         """Return the key from the given key code returned by `KeyboardEvent.key_code`"""
         special_keys = {
-            -204: "UP",
-            -206: "DOWN",
-            -203: "LEFT",
-            -205: "RIGHT",
-            -301: "TAB",
-            -302: "BACK_TAB",
-            13: "ENTER",
+            -204: Directions.UP,
+            -206: Directions.DOWN,
+            -203: Directions.LEFT,
+            -205: Directions.RIGHT,
+            -301: ControlButtons.TAB,
+            -302: ControlButtons.BACK_TAB,
+            13: ControlButtons.ENTER,
         }
 
         if key_code in special_keys:
@@ -83,7 +85,7 @@ class Game:
 
             key = self._get_letter_from_code(event.key_code)
 
-            if key == "ENTER":
+            if key == ControlButtons.ENTER:
                 button = self._get_active_button(_buttons)
 
                 if button:
@@ -97,8 +99,8 @@ class Game:
 
                     key = buttonmapping[button]
 
-            if key in ("UP", "DOWN", "LEFT", "RIGHT"):
-                _moves.append(key.capitalize())
+            if key in list(Directions):
+                _moves.append(key)
 
             elif key == "r":
                 _moves = []
@@ -110,7 +112,7 @@ class Game:
             elif key == "g":
                 break
 
-            elif key == "TAB":
+            elif key == ControlButtons.TAB:
                 button = self._get_active_button(_buttons)
 
                 if button and _buttons.index(button) != len(_buttons) - 1:
@@ -118,7 +120,7 @@ class Game:
 
                     _buttons[_buttons.index(button) + 1].selected = True
 
-            elif key == "BACK_TAB":
+            elif key == ControlButtons.BACK_TAB:
                 button = self._get_active_button(_buttons)
 
                 if button and _buttons.index(button) != 0:
@@ -136,9 +138,3 @@ class Game:
         l1 = Level(self.screen)
         l1.run(moves)
         print(moves)
-
-
-if __name__ == "__main__":
-    game = Game()
-
-    Screen.wrapper(game.run)
