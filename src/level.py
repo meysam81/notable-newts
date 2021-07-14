@@ -1,10 +1,13 @@
+import pickle
 from time import sleep
 from typing import List, Tuple
 
-from asciimatics.constants import COLOUR_RED
+from asciimatics.constants import COLOUR_GREEN, COLOUR_RED, COLOUR_WHITE
 from asciimatics.screen import Screen
 
+import config
 from player import Player
+from tile import Tile
 
 
 class Level:
@@ -19,18 +22,36 @@ class Level:
         self.player_y = self.height - 1 + self.y_pad
 
         self.path_taken: Tuple(int, int) = []
-        self.grid = [["" for _ in range(self.width)] for __ in range(self.height)]
+        self.grid: List[List[Tile]] = self.load_level()
         self.player = Player(self.player_x, self.player_y)
+
+    def load_level(self) -> None:
+        with open(config.general_settings.load_maze(0), "rb") as f:
+            return pickle.load(f)
 
     def _draw_stage(self) -> None:
         """Draws static elements"""
         # THIS WILL BE REWORKED ALTOGETHER ONCE THE LEVEL MAKER IS IMPLEMENTED
         # the goal is to use self.grid to draw what is passable and what isn't
-        self.screen.move(self.x_pad, self.y_pad)
-        self.screen.draw(self.x_pad, self.y_pad + self.height, char="*")
-        self.screen.draw(self.x_pad + self.width, self.y_pad + self.height, char="*")
-        self.screen.draw(self.x_pad + self.width, self.y_pad, char="*")
-        self.screen.draw(self.x_pad, self.y_pad, char="*")
+        _x, _y = self.x_pad, self.y_pad
+        _x_s, _y_s = 1, 1
+        for row in self.grid:
+            for col in row:
+                if not col.passable:
+                    self.screen.highlight(_x, _y, 1, 1, None, COLOUR_WHITE)
+                else:
+                    self.screen.highlight(_x, _y, 1, 1, None, COLOUR_GREEN)
+                if col.enemy:
+                    self.screen.highlight(_x, _y, 1, 1, None, COLOUR_RED)
+                _x += _x_s
+            _x = self.x_pad
+            _y += _y_s
+
+        # self.screen.move(self.x_pad, self.y_pad)
+        # self.screen.draw(self.x_pad, self.y_pad + self.height, char="*")
+        # self.screen.draw(self.x_pad + self.width, self.y_pad + self.height, char="*")
+        # self.screen.draw(self.x_pad + self.width, self.y_pad, char="*")
+        # self.screen.draw(self.x_pad, self.y_pad, char="*")
 
     def draw_path(self) -> None:
         for (x, y) in self.path_taken:
