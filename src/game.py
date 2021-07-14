@@ -132,10 +132,9 @@ class Game:
 
     def run(self, screen: Screen) -> None:
         """Runs the game"""
-
         self.screen = screen
         moves = self._get_moves()
         l1 = Level(self.screen)
         l1.run(moves)
-        
+
         print(moves)
