@@ -1,12 +1,12 @@
 from enum import Enum
 
 
+# Inheriting from `str` because it makes string comparison possible
 class BaseEnum(str, Enum):
     def __str__(self):
         return self.value
 
 
-# Inheriting from `str` because it makes string comparison possible
 class Directions(BaseEnum):
     UP = "UP"
     RIGHT = "RIGHT"
