@@ -1,8 +1,8 @@
-# import pickle  # nosec
+import pickle  # nosec
 
 import pygame
 
-# import config
+import config
 
 pygame.init()
 
@@ -46,9 +46,9 @@ def select_square():
                     selected_tool = add_enemy
                 if event.key == pygame.K_s:
                     print("saving")
-                    # with open(config.general_settings.new_maze_path(), "wb") as f:
-                    # pickle.dump(grid, f)
-                    # f.close()
+                    with open(config.general_settings.new_maze_path(), "wb") as f:
+                        pickle.dump(grid, f)
+                    f.close()
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 while selected:
