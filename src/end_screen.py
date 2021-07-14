@@ -59,7 +59,7 @@ class EndScreen(Frame):
 
         layout1 = Layout([1])
         blank = Layout([1])
-        layout2 = Layout([1, 1])
+        layout2 = Layout([1, 1, 1])
 
         self.add_layout(layout1)
         self.add_layout(blank)
@@ -74,14 +74,21 @@ class EndScreen(Frame):
         blank.add_widget(Label(""), 0)
 
         layout2.add_widget(Button("Next Level", self._next), 0)
-        layout2.add_widget(Button("Reset", self._reset), 1)
+        layout2.add_widget(Button("Level Select", self._select), 1)
+        layout2.add_widget(Button("Reset", self._reset), 2)
 
         self.fix()
 
     def _next(self) -> None:
+        # To be added
+        ...
+
+    def _select(self) -> None:
+        # To be added
         ...
 
     def _reset(self) -> None:
+        # To be changed
         raise StopApplication("reset")
 
 
