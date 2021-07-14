@@ -5,6 +5,7 @@ from asciimatics.event import Event, KeyboardEvent
 from asciimatics.screen import Screen
 
 from constants import ControlButtons, Directions
+from end_screen import EndScreen
 from level import Level
 
 
@@ -137,4 +138,9 @@ class Game:
         moves = self._get_moves()
         l1 = Level(self.screen)
         l1.run(moves)
+        
+        won = True
+        end = EndScreen(won, self.screen, 1, 12.323)
+        end.run()
+        
         print(moves)
