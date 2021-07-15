@@ -8,11 +8,11 @@ from tile import Tile
 pygame.init()
 
 
-canvas = pygame.display.set_mode((540, 540))
-s_s = 60
+canvas = pygame.display.set_mode((500, 500))
+s_s = 20
 
 
-grid = [[Tile() for i in range(9)] for j in range(9)]
+grid = [[Tile() for i in range(25)] for j in range(25)]
 
 
 def select_square():

@@ -6,12 +6,17 @@ class BaseEnum(str, Enum):
         return self.value
 
 
-# Inheriting from `str` because it makes string comparison possible
-class Directions(BaseEnum):
-    UP = "UP"
-    RIGHT = "RIGHT"
-    DOWN = "DOWN"
-    LEFT = "LEFT"
+class TupleEnum(tuple, Enum):
+    def __str__(self):
+        return str(self.value)
+
+
+# Inheriting from `tuple` because it makes indexing possible
+class Directions(TupleEnum):
+    UP = (0, -1)
+    RIGHT = (1, 0)
+    DOWN = (0, 1)
+    LEFT = (-1, 0)
 
 
 class ControlButtons(BaseEnum):

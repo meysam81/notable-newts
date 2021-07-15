@@ -65,7 +65,14 @@ class Game:
             )
 
             for i, move in enumerate(_moves[_rstart:]):
-                self.screen.print_at(move, 5, i)
+                if move[1] == 1:
+                    self.screen.print_at("DOWN", 5, i)
+                elif move[1] == -1:
+                    self.screen.print_at("UP", 5, i)
+                elif move[0] == 1:
+                    self.screen.print_at("RIGHT", 5, i)
+                elif move[0] == -1:
+                    self.screen.print_at("LEFT", 5, i)
 
             for i, button in enumerate(_buttons):
 
@@ -137,4 +144,3 @@ class Game:
         moves = self._get_moves()
         l1 = Level(self.screen)
         l1.run(moves)
-        print(moves)

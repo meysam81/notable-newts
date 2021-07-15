@@ -1,7 +1,5 @@
 from asciimatics.screen import Screen
 
-from constants import Directions
-
 
 class Player:
     """A class representing the player"""
@@ -12,19 +10,11 @@ class Player:
         self.y = y
         self.symbol = "o"
 
-    def move(self, direction: str) -> None:
+    def move(self, direction) -> None:
         """Moves the player"""
-        direction = direction.upper()
+        self.x += direction[0]
+        self.y += direction[1]
 
-        if direction == Directions.UP:
-            self.y -= 1
-        elif direction == Directions.DOWN:
-            self.y += 1
-        elif direction == Directions.LEFT:
-            self.x -= 1
-        elif direction == Directions.RIGHT:
-            self.x += 1
-
-    def render(self, screen: Screen) -> None:
+    def render(self, screen: Screen, bg) -> None:
         """Renders the player on the screen"""
-        screen.print_at(self.symbol, self.x, self.y)
+        screen.print_at(self.symbol, self.x, self.y, bg=bg)
