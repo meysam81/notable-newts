@@ -1,4 +1,5 @@
 from asciimatics.effects import Print
+from asciimatics.exceptions import NextScene
 from asciimatics.renderers import FigletText
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
@@ -60,15 +61,13 @@ class GameFrame(Frame):
         layout = Layout([1, 1])
         self.add_layout(layout)
         layout.add_widget(Button("Go", self._go), 1)
+        layout.add_widget(Button("Main Menu", self._main_menu), 1)
         self.input_field = CustomTextBox(screen.height-6, name='input')
         layout.add_widget(self.input_field, 0)
         self.fix()
 
-    def start(self):
-        effects = [Print(self.screen, FigletText("press w a s d to specify moves"), x=0, y=0, colour=7)]
-        effects.append(self)
-        scenes = [Scene(effects=effects, duration=-1, name="game")]
-        self.screen.play(scenes, stop_on_resize=True, allow_int=True)
+    def _main_menu(self):
+        raise NextScene("mainMenu")
 
     def _go(self):
         """
@@ -80,12 +79,25 @@ class GameFrame(Frame):
         exit(1)
 
 
-def start(screen):
-    effects = [Print(screen, FigletText("press w a s d to specify moves"), x=0, y=0, colour=7)]
-    effects.append(GameFrame(screen))
-    scenes = [Scene(effects=effects, duration=-1, name="game")]
-    screen.play(scenes, stop_on_resize=True, allow_int=True)
+class GameScene(Scene):
+    def __init__(self, screen: Screen):
+        effects = [
+            Print(screen,
+                  FigletText("press w a s d to specify moves"),
+                  x=0,
+                  y=0,
+                  colour=7),
+            GameFrame(screen)]
+        duration = -1
+        clear = True
+        name = "game"
+        super(GameScene, self).__init__(
+            effects,
+            duration,
+            clear,
+            name
+        )
 
 
 if __name__ == "__main__":
-    Screen.wrapper(start, catch_interrupt=True)
+    Screen.wrapper(GameScene, catch_interrupt=True)
