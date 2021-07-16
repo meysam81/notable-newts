@@ -18,8 +18,6 @@ class GameFrame(Frame):
         Here the frame with the undo, reset and go button is created
         """
         # The settings for the frame in which the layouts are displayed
-        # The frame will be the full length of the screen and 10 characters wide
-        # it will be positioned all the way to the right of the screen
         super(GameFrame, self).__init__(
             screen,
             screen.height-6,
