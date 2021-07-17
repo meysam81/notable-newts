@@ -15,8 +15,8 @@ from asciimatics.widgets.widget import Widget
 
 
 class CustomTextBox(Widget):
-    """
-    A CustomTextBox is a widget for multi-line text editing.
+    """A CustomTextBox is a widget for multi-line text editing.
+
     It consists of a framed box with option label.
     """
 
