@@ -1,5 +1,5 @@
 from asciimatics.effects import Print
-from asciimatics.exceptions import StopApplication
+from asciimatics.exceptions import NextScene
 from asciimatics.renderers import Box, FigletText
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
@@ -26,33 +26,8 @@ class EndScreen(Frame):
             title="Contact Details",
             reduce_cpu=True,
             has_border=False,
+            on_load=lambda: self.set_theme("monochrome")
         )
-
-        self.palette = {
-            "background": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "borders": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "button": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "disabled": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "edit_text": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_button": (TEXT_COLOUR, screen.A_BOLD, screen.COLOUR_BLACK),
-            "focus_control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_edit_text": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "invalid": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "label": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "scroll": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_focus_control": (
-                TEXT_COLOUR,
-                screen.A_NORMAL,
-                screen.COLOUR_BLACK,
-            ),
-            "selected_focus_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "title": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-        }
 
         self.state = state
         self.time = time
@@ -74,70 +49,75 @@ class EndScreen(Frame):
         blank.add_widget(Label(""), 0)
 
         layout2.add_widget(Button("Next Level", self._next), 0)
-        layout2.add_widget(Button("Level Select", self._select), 1)
+        layout2.add_widget(Button("Main Menu", self._menu), 1)
         layout2.add_widget(Button("Reset", self._reset), 2)
 
         self.fix()
 
     def _next(self) -> None:
-        # To be added
-        ...
+        # Call game scene with level +1 ?
+        raise NextScene('game')
 
-    def _select(self) -> None:
-        # To be added
-        ...
+    def _menu(self) -> None:
+        raise NextScene('mainMenu')
 
     def _reset(self) -> None:
-        # To be changed
-        raise StopApplication("reset")
+        raise NextScene('game')
 
 
-def effect(screen: Screen, level: int, state: bool, width: int, height: int) -> tuple[list, int, int]:
-    """Gets the effects to show"""
-    x_start = (screen.width - width)//2
-    y_start = (screen.height - height)//2
+class EndScreenScene(Scene):
+    """End screen scene"""
 
-    text = "Level Failed"
-    if state:
-        text = "Level Complete!"
+    def __init__(self, screen: Screen):
+        width = 70
+        height = 20
 
-    s1_width = max(map(len, str(FigletText(text, font='small')).split("\n")))
-    s2_width = max(map(len, str(FigletText(str(level), font='small')).split("\n")))
+        level = 1
+        time = 12.3
 
-    number = [Print(
-        screen,
-        Box(width, height),
-        x=x_start,
-        y=y_start,
-        colour=TEXT_COLOUR
-    ), Print(
-        screen,
-        FigletText(text, font="small"),
-        x=(width - s1_width)//2 + x_start,
-        y=y_start + 8
-    ), Print(
-        screen,
-        FigletText(str(level), font="small"),
-        x=(width - s2_width)//2 + x_start,
-        y=y_start + 2,
-        colour=TEXT_COLOUR
-    )
-    ]
+        state = True
 
-    return number, x_start, y_start
+        x_start = (screen.width - width)//2
+        y_start = (screen.height - height)//2
+
+        text = "Level Failed"
+        if state:
+            text = "Level Complete!"
+
+        s1_width = max(map(len, str(FigletText(text, font='small')).split("\n")))
+        s2_width = max(map(len, str(FigletText(str(level), font='small')).split("\n")))
+
+        effects = [Print(
+            screen,
+            Box(width, height),
+            x=x_start,
+            y=y_start,
+            colour=TEXT_COLOUR
+        ), Print(
+            screen,
+            FigletText(text, font="small"),
+            x=(width - s1_width)//2 + x_start,
+            y=y_start + 8
+        ), Print(
+            screen,
+            FigletText(str(level), font="small"),
+            x=(width - s2_width)//2 + x_start,
+            y=y_start + 2,
+            colour=TEXT_COLOUR
+        )
+        ]
+
+        effects.append(EndScreen(state, screen, time, x_start, width, y_start, height))
+        duration = -1
+        clear = True
+        name = "endScreen"
+        super(EndScreenScene, self).__init__(
+            effects,
+            duration,
+            clear,
+            name
+        )
 
 
-def run(screen: Screen, level: int, state: bool, time: float, width: int, height: int) -> None:
-    """Runs the end screen"""
-    effects, x_pad, y_pad = effect(screen, level, state, width, height)
-    effects.append(EndScreen(state, screen, time, x_pad, width, y_pad, height))
-    scenes = [Scene(effects=effects, duration=-1, name="End")]
-    screen.play(scenes, stop_on_resize=True, allow_int=True)
-
-
-def main(screen: Screen) -> None:
-    """Main"""
-    run(screen, 1, True, 2.4, 70, 20)
-
-
-Screen.wrapper(main)
+if __name__ == "__main__":
+    Screen.wrapper(EndScreenScene, catch_interrupt=True)

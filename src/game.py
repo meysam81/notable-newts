@@ -13,14 +13,14 @@ TEXT_COLOUR = Screen.COLOUR_WHITE
 
 
 class GameFrame(Frame):
+    """Game frame"""
+
     def __init__(self, screen: Screen):
-        """
-        Here the frame with the undo, reset and go button is created
-        """
+        """Here the frame with the undo, reset and go button is created"""
         # The settings for the frame in which the layouts are displayed
         super(GameFrame, self).__init__(
             screen,
-            screen.height-6,
+            screen.height,
             screen.width // 2,
             x=0,
             y=6,
@@ -29,33 +29,9 @@ class GameFrame(Frame):
             title="game",
             reduce_cpu=True,
             has_border=False,
+            on_load=lambda: self.set_theme("monochrome")
         )
-        # The theme of the frame for every widget type (foreground, attribute, background)
-        self.palette = {
-            "background": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "borders": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "button": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "disabled": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "edit_text": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_button": (TEXT_COLOUR, screen.A_BOLD, screen.COLOUR_BLACK),
-            "focus_control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_edit_text": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "invalid": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "label": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "scroll": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_focus_control": (
-                TEXT_COLOUR,
-                screen.A_NORMAL,
-                screen.COLOUR_BLACK,
-            ),
-            "selected_focus_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "title": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-        }
+
         layout = Layout([1, 1])
         self.add_layout(layout)
         layout.add_widget(Button("Go", self._go), 1)
@@ -64,20 +40,20 @@ class GameFrame(Frame):
         layout.add_widget(self.input_field, 0)
         self.fix()
 
-    def _main_menu(self):
+    def _main_menu(self) -> None:
         raise NextScene("mainMenu")
 
-    def _go(self):
-        """
-        start the level simulator
-        """
+    def _go(self) -> None:
+        """Start the level simulator"""
         # TODO: add functionality
         level = Level(self.screen)
         level.run([x for x in self.input_field.value if x != ''])
-        exit(1)
+        raise NextScene("endScreen")
 
 
 class GameScene(Scene):
+    """Game scene"""
+
     def __init__(self, screen: Screen):
         effects = [
             Print(screen,

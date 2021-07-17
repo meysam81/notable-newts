@@ -12,14 +12,10 @@ text_colour = Screen.COLOUR_WHITE
 
 
 class MainMenuFrame(Frame):
-    """
-    Class that will show the main menu
-    """
+    """Class that will show the main menu"""
 
-    def __init__(self, screen):
-        """
-        Here the frame with all layouts and widgets is created
-        """
+    def __init__(self, screen: Screen):
+        """Here the frame with all layouts and widgets is created"""
         # The settings for the frame in which the layouts are displayed
         super(MainMenuFrame, self).__init__(screen,
                                             screen.height,
@@ -30,29 +26,8 @@ class MainMenuFrame(Frame):
                                             can_scroll=False,
                                             title="Contact Details",
                                             reduce_cpu=True,
-                                            has_border=False)
-        # The theme of the frame for every widget type (foreground, attribute, background)
-        self.palette = {
-            "background": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "borders": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "button": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "control": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "disabled": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "edit_text": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "field": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_button": (text_colour, screen.A_BOLD, screen.COLOUR_BLACK),
-            "focus_control": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_edit_text": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_field": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "invalid": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "label": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "scroll": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_control": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_field": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_focus_control": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_focus_field": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "title": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK)
-        }
+                                            has_border=False,
+                                            on_load=lambda: self.set_theme("monochrome"))
         # The layouts will will be displayed in the frame
         layout1 = Layout([1])
         layout2 = Layout([1])
@@ -66,25 +41,22 @@ class MainMenuFrame(Frame):
         layout3.add_widget(Button("Exit", self._quit), 0)
         self.fix()
 
-    def _play(self):
-        """
-        When the player chooses play, start the game
-        """
+    def _play(self) -> None:
+        """When the player chooses play, start the game"""
         raise NextScene('game')
 
-    def _levelSelect(self):
-        """
-        When the player chooses levels, display the level selection screen
-        """
-        # TODO: Show level select screen
-        pass
+    def _levelSelect(self) -> None:
+        """When the player chooses levels, display the level selection screen"""
+        raise NextScene('levelSelect')
 
     @staticmethod
-    def _quit():
+    def _quit() -> None:
         raise StopApplication("User pressed quit")
 
 
 class MainMenuScene(Scene):
+    """Main menu"""
+
     def __init__(self, screen: Screen):
         effects = [
             Print(screen,

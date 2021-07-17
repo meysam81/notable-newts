@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from builtins import chr, str
 from copy import copy
+from typing import Union
 
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import Screen
@@ -11,8 +12,8 @@ from asciimatics.widgets.widget import Widget
 
 
 class CustomTextBox(Widget):
-    """
-    A CustomTextBox is a widget for multi-line text editing.
+    """A CustomTextBox is a widget for multi-line text editing.
+
     It consists of a framed box with option label.
     """
 
@@ -20,9 +21,11 @@ class CustomTextBox(Widget):
                  "_as_string", "_line_wrap", "_on_change", "_reflowed_text_cache", "_parser",
                  "_readonly"]
 
-    def __init__(self, height, label=None, name=None, as_string=False, line_wrap=False, parser=None,
-                 on_change=None, readonly=False, **kwargs):
-        """
+    def __init__(self, height: int, label: str = None, name: str = None,
+                 as_string: bool = False, line_wrap: bool = False, parser: callable = None,
+                 on_change: callable = None, readonly: bool = False, **kwargs):
+        """Init function
+
         :param height: The required number of input lines for this CustomTextBox.
         :param label: An optional label for the widget.
         :param name: The name for the CustomTextBox.
@@ -48,7 +51,8 @@ class CustomTextBox(Widget):
         self._reflowed_text_cache = None
         self._readonly = readonly
 
-    def update(self, frame_no):
+    def update(self, frame_no: int) -> None:
+        """Updates box"""
         self._draw_label()
 
         # Calculate new visible limits if needed.
@@ -108,17 +112,17 @@ class CustomTextBox(Widget):
                                         background
                                         )
 
-    def reset(self):
-        # Reset to original data and move to end of the text.
+    def reset(self) -> None:
+        """Reset to original data and move to end of the text"""
         self._start_line = 0
         self._start_column = 0
         self._line = len(self._value) - 1
         self._column = 0 if self._is_disabled else len(self._value[self._line])
         self._reflowed_text_cache = None
 
-    def _change_line(self, delta):
-        """
-        Move the cursor up/down the specified number of lines.
+    def _change_line(self, delta: int) -> None:
+        """Move the cursor up/down the specified number of lines.
+
         :param delta: The number of lines to move (-ve is up, +ve is down).
         """
         # Ensure new line is within limits
@@ -128,8 +132,9 @@ class CustomTextBox(Widget):
         if self._column >= len(self._value[self._line]):
             self._column = len(self._value[self._line])
 
-    def process_event(self, event):
-        def _join(a, b):
+    def process_event(self, event: Union[KeyboardEvent, MouseEvent]) -> Union[MouseEvent, None]:
+        """Processes key presses"""
+        def _join(a: str, b: str) -> ColouredText:
             if self._parser:
                 return ColouredText(a, self._parser, colour=b[0].first_colour).join(b)
             return a.join(b)
@@ -207,13 +212,14 @@ class CustomTextBox(Widget):
         # If we got here, we processed the event - swallow it.
         return None
 
-    def required_height(self, offset, width):
+    def required_height(self, offset: int, width: int) -> int:
+        """Gets required height"""
         return self._required_height
 
     @property
-    def _reflowed_text(self):
-        """
-        The text as should be formatted on the screen.
+    def _reflowed_text(self) -> list:
+        """The text as should be formatted on the screen.
+
         This is an array of tuples of the form (text, value line, value column offset) where
         the line and column offsets are indeces into the value (not displayed glyph coordinates).
         """
@@ -236,16 +242,15 @@ class CustomTextBox(Widget):
         return self._reflowed_text_cache
 
     @property
-    def value(self):
-        """
-        The current value for this CustomTextBox.
-        """
+    def value(self) -> str:
+        """The current value for this CustomTextBox."""
         if self._value is None:
             self._value = [""]
         return "\n".join([str(x) for x in self._value]) if self._as_string else self._value
 
     @value.setter
-    def value(self, new_value):
+    def value(self, new_value: str) -> None:
+        """Sets value of box"""
         # Convert to the internal format
         old_value = self._value
         if new_value is None:
@@ -273,17 +278,16 @@ class CustomTextBox(Widget):
             self._on_change()
 
     @property
-    def readonly(self):
-        """
-        Whether this widget is readonly or not.
-        """
+    def readonly(self) -> bool:
+        """Whether this widget is readonly or not."""
         return self._readonly
 
     @readonly.setter
-    def readonly(self, new_value):
+    def readonly(self, new_value: bool) -> None:
         self._readonly = new_value
 
     @property
-    def frame_update_count(self):
+    def frame_update_count(self) -> int:
+        """Gets frame update count"""
         # Force refresh for cursor if needed.
         return 5 if self._has_focus and not self._frame.reduce_cpu else 0
