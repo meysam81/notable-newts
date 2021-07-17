@@ -1,6 +1,4 @@
-from __future__ import (
-    absolute_import, division, print_function, unicode_literals
-)
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 from builtins import chr, str
 from copy import copy
@@ -9,9 +7,7 @@ from typing import Union
 from asciimatics.event import KeyboardEvent, MouseEvent
 from asciimatics.screen import Screen
 from asciimatics.strings import ColouredText
-from asciimatics.widgets.utilities import (
-    _enforce_width, _find_min_start, logger
-)
+from asciimatics.widgets.utilities import _enforce_width, _find_min_start, logger
 from asciimatics.widgets.widget import Widget
 
 
