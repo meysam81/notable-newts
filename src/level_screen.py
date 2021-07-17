@@ -32,33 +32,8 @@ class LevelScreen(Frame):
             title="Contact Details",
             reduce_cpu=True,
             has_border=False,
+            on_load=lambda: self.set_theme("monochrome")
         )
-
-        self.palette = {
-            "background": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "borders": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "button": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "disabled": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "edit_text": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_button": (TEXT_COLOUR, screen.A_BOLD, screen.COLOUR_BLACK),
-            "focus_control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_edit_text": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "invalid": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "label": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "scroll": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_focus_control": (
-                TEXT_COLOUR,
-                screen.A_NORMAL,
-                screen.COLOUR_BLACK,
-            ),
-            "selected_focus_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "title": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
-        }
 
         levels = len(os.listdir(MAZE_LOC))
 

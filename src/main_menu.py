@@ -26,29 +26,8 @@ class MainMenuFrame(Frame):
                                             can_scroll=False,
                                             title="Contact Details",
                                             reduce_cpu=True,
-                                            has_border=False)
-        # The theme of the frame for every widget type (foreground, attribute, background)
-        self.palette = {
-            "background": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "borders": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "button": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "control": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "disabled": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "edit_text": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "field": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_button": (text_colour, screen.A_BOLD, screen.COLOUR_BLACK),
-            "focus_control": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_edit_text": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "focus_field": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "invalid": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "label": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "scroll": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_control": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_field": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_focus_control": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "selected_focus_field": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK),
-            "title": (text_colour, screen.A_NORMAL, screen.COLOUR_BLACK)
-        }
+                                            has_border=False,
+                                            on_load=lambda: self.set_theme("monochrome"))
         # The layouts will will be displayed in the frame
         layout1 = Layout([1])
         layout2 = Layout([1])
