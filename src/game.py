@@ -74,7 +74,7 @@ class GameFrame(Frame):
         # TODO: add functionality
         level = Level(self.screen)
         level.run([x for x in self.input_field.value if x != ''])
-        exit(1)
+        raise NextScene("endScreen")
 
 
 class GameScene(Scene):

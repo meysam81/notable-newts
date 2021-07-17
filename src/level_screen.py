@@ -1,3 +1,5 @@
+import os
+
 from asciimatics.effects import Print
 from asciimatics.exceptions import StopApplication, NextScene
 from asciimatics.renderers import Box, FigletText
@@ -5,17 +7,21 @@ from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 from asciimatics.widgets import Button, Frame, Label, Layout
 
+from config import root_dir
+
+MAZE_LOC = (root_dir / fr"docs/mazes").absolute()
+
 TEXT_COLOUR = Screen.COLOUR_WHITE
 
 
-class EndScreen(Frame):
+class LevelScreen(Frame):
     """Framework for end screen"""
 
-    def __init__(self, state: bool, screen: Screen, time: float, x_pad: int, win_width: int, y_pad: int, height: int):
+    def __init__(self, screen: Screen, y_pad: int):
         """Initiates end screen"""
         self.text_width = 60
-        self.x_pos, self.y_pos = x_pad + (win_width - self.text_width)//2, y_pad + height - 5
-        super(EndScreen, self).__init__(
+        self.x_pos, self.y_pos = (screen.width-self.text_width)//2, y_pad+2
+        super(LevelScreen, self).__init__(
             screen,
             3,
             self.text_width,
@@ -54,89 +60,73 @@ class EndScreen(Frame):
             "title": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
         }
 
-        self.state = state
-        self.time = time
 
-        layout1 = Layout([1])
-        blank = Layout([1])
-        layout2 = Layout([1, 1, 1])
+        levels = len(os.listdir(MAZE_LOC))
 
-        self.add_layout(layout1)
-        self.add_layout(blank)
-        self.add_layout(layout2)
+        rows = levels//4
 
-        text = ""
-        if state:
-            text = f"You finished in time: {time}s"
+        layouts = [Layout([1, 1, 1, 1]) for _ in range(rows)]
 
-        layout1.add_widget(Label(text, align="^"), 0)
+        bottom = Layout([2])
 
-        blank.add_widget(Label(""), 0)
+        if levels%4:
+            layouts.append(Layout([1]*(levels%4)))
 
-        layout2.add_widget(Button("Next Level", self._next), 0)
-        layout2.add_widget(Button("Main Menu", self._menu), 1)
-        layout2.add_widget(Button("Reset", self._reset), 2)
+        for layout in layouts:
+            self.add_layout(layout)
 
+        self.add_layout(bottom)
+
+
+        if levels%4:
+            j = 0
+            for j in range(len(layouts) - 1):
+                for i in range(4):
+                    layouts[j].add_widget(Button(f"Level {j*4+i}", lambda i=j*4+i: self._level(i)), i)
+
+            for i in range(levels%4):
+                layouts[-1].add_widget(Button(f"Level {j*4 + i}", lambda i=j*4+i: self._level(i)), i)
+
+        else:
+            for j in range(len(layouts)):
+                for i in range(4):
+                    layouts[j].add_widget(Button(f"Level {j*4+i}", lambda i=j*4+i: self._level(i)), i)
+
+        bottom.add_widget(Label(""), 0)
+        bottom.add_widget(Button("Exit", self._quit), 0)
+        
         self.fix()
 
-    def _next(self) -> None:
-        # Call game scene with level +1 ?
-        raise NextScene('game')
+    def _level(self, num) -> None:
+        # To be added
+        print(num)
+        raise NextScene("game")
+
+    def _quit(self) -> None:
+        # To be changed
+        raise NextScene("mainMenu")
 
 
-    def _menu(self) -> None:
-        raise NextScene('mainMenu')
-
-
-    def _reset(self) -> None:
-        raise NextScene('game')
-
-
-class EndScreenScene(Scene):
+class LevelSelectScene(Scene):
     def __init__(self, screen: Screen):
-        width = 70
-        height = 20
-
-        level = 1
-        time = 12.3
-
-        state = True
+        s_width = max(map(len, str(FigletText("Level Select", font='small')).split("\n")))
+        s_height = len(str(FigletText("Level Select", font='small')).split("\n"))
         
-        x_start = (screen.width - width)//2
-        y_start = (screen.height - height)//2
-
-        text = "Level Failed"
-        if state:
-            text = "Level Complete!"
-
-        s1_width = max(map(len, str(FigletText(text, font='small')).split("\n")))
-        s2_width = max(map(len, str(FigletText(str(level), font='small')).split("\n")))
-
         effects = [Print(
             screen,
-            Box(width, height),
-            x=x_start,
-            y=y_start,
-            colour=TEXT_COLOUR
-        ), Print(
-            screen,
-            FigletText(text, font="small"),
-            x=(width - s1_width)//2 + x_start,
-            y=y_start + 8
-        ), Print(
-            screen,
-            FigletText(str(level), font="small"),
-            x=(width - s2_width)//2 + x_start,
-            y=y_start + 2,
+            FigletText("Level Select", font='small'),
+            x=(screen.width - s_width)//2,
+            y=1,
             colour=TEXT_COLOUR
         )
         ]
 
-        effects.append(EndScreen(state, screen, time, x_start, width, y_start, height))
+        effects.append(LevelScreen(screen, s_height))
+
         duration = -1
         clear = True
-        name = "endScreen"
-        super(EndScreenScene, self).__init__(
+        name = "levelSelect"
+        super(LevelSelectScene, self).__init__(
             effects,
             duration,
             clear,
@@ -144,4 +134,4 @@ class EndScreenScene(Scene):
         )
 
 if __name__ == "__main__":
-    Screen.wrapper(EndScreenScene, catch_interrupt=True)
+    Screen.wrapper(LevelSelectScreen, catch_interrupt=True)

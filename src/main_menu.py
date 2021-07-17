@@ -76,8 +76,7 @@ class MainMenuFrame(Frame):
         """
         When the player chooses levels, display the level selection screen
         """
-        # TODO: Show level select screen
-        pass
+        raise NextScene('levelSelect')
 
     @staticmethod
     def _quit():
