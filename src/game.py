@@ -1,140 +1,101 @@
-from contextlib import suppress
-from typing import Union
-
-from asciimatics.event import Event, KeyboardEvent
+from asciimatics.effects import Print
+from asciimatics.exceptions import NextScene
+from asciimatics.renderers import FigletText
+from asciimatics.scene import Scene
 from asciimatics.screen import Screen
+from asciimatics.widgets import Button, Frame, Layout
 
-from constants import ControlButtons, Directions
+from custom_text_box import CustomTextBox
 from level import Level
 
-
-class Button:
-    """A class representing a button"""
-
-    def __init__(self, label: str, enum: int, selected: bool = False):
-        self.label = label
-        self.enum = enum
-
-        self.selected = selected
+# constants
+TEXT_COLOUR = Screen.COLOUR_WHITE
 
 
-class Game:
-    """A class that represents the game"""
-
-    def __init__(self):
-        self.screen: Union[Screen, None] = None
-
-    def _get_letter_from_code(self, key_code: int) -> str:
-        """Return the key from the given key code returned by `KeyboardEvent.key_code`"""
-        special_keys = {
-            -204: Directions.UP,
-            -206: Directions.DOWN,
-            -203: Directions.LEFT,
-            -205: Directions.RIGHT,
-            -301: ControlButtons.TAB,
-            -302: ControlButtons.BACK_TAB,
-            13: ControlButtons.ENTER,
+class GameFrame(Frame):
+    def __init__(self, screen: Screen):
+        """
+        Here the frame with the undo, reset and go button is created
+        """
+        # The settings for the frame in which the layouts are displayed
+        super(GameFrame, self).__init__(
+            screen,
+            screen.height-6,
+            screen.width // 2,
+            x=0,
+            y=6,
+            hover_focus=True,
+            can_scroll=False,
+            title="game",
+            reduce_cpu=True,
+            has_border=False,
+        )
+        # The theme of the frame for every widget type (foreground, attribute, background)
+        self.palette = {
+            "background": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "borders": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "button": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "disabled": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "edit_text": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "focus_button": (TEXT_COLOUR, screen.A_BOLD, screen.COLOUR_BLACK),
+            "focus_control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "focus_edit_text": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "focus_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "invalid": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "label": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "scroll": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "selected_control": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "selected_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "selected_focus_control": (
+                TEXT_COLOUR,
+                screen.A_NORMAL,
+                screen.COLOUR_BLACK,
+            ),
+            "selected_focus_field": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
+            "title": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
         }
+        layout = Layout([1, 1])
+        self.add_layout(layout)
+        layout.add_widget(Button("Go", self._go), 1)
+        layout.add_widget(Button("Main Menu", self._main_menu), 1)
+        self.input_field = CustomTextBox(screen.height-6, name='input')
+        layout.add_widget(self.input_field, 0)
+        self.fix()
 
-        if key_code in special_keys:
-            return special_keys[key_code]
+    def _main_menu(self):
+        raise NextScene("mainMenu")
 
-        return chr(key_code).lower()
+    def _go(self):
+        """
+        start the level simulator
+        """
+        # TODO: add functionality
+        level = Level(self.screen)
+        level.run([x for x in self.input_field.value if x != ''])
+        exit(1)
 
-    def _get_active_button(self, buttons: list) -> Union[Button, None]:
-        buttons = [button for button in buttons if button.selected]
 
-        if buttons:
-            return buttons[0]
+class GameScene(Scene):
+    def __init__(self, screen: Screen):
+        effects = [
+            Print(screen,
+                  FigletText("press w a s d to specify moves"),
+                  x=0,
+                  y=0,
+                  colour=7),
+            GameFrame(screen)]
+        duration = -1
+        clear = True
+        name = "game"
+        super(GameScene, self).__init__(
+            effects,
+            duration,
+            clear,
+            name
+        )
 
-    def _get_moves(self) -> list:
-        """Gets the moves the player wants to input"""
-        _buttons = [
-            Button("Undo (u)", 0, True),
-            Button("Reset (r)", 1),
-            Button("Go (g)", 2),
-        ]
 
-        _moves = []
-
-        while True:
-            _rstart = (
-                0
-                if len(_moves) <= self.screen.height
-                else len(_moves) - self.screen.height
-            )
-
-            for i, move in enumerate(_moves[_rstart:]):
-                self.screen.print_at(move, 5, i)
-
-            for i, button in enumerate(_buttons):
-
-                self.screen.print_at(
-                    button.label,
-                    self.screen.width - (len(button.label) + 5),
-                    i,
-                    attr=Screen.A_REVERSE if button.selected else 0,
-                )
-            self.screen.refresh()
-            self.screen.clear_buffer(0, 1, 0)
-
-            event: Event = self.screen.get_event()
-
-            if not event or not isinstance(event, KeyboardEvent):
-                continue
-
-            key = self._get_letter_from_code(event.key_code)
-
-            if key == ControlButtons.ENTER:
-                button = self._get_active_button(_buttons)
-
-                if button:
-                    button = button.enum
-
-                    buttonmapping = {
-                        0: "u",
-                        1: "r",
-                        2: "g",
-                    }
-
-                    key = buttonmapping[button]
-
-            if key in list(Directions):
-                _moves.append(key)
-
-            elif key == "r":
-                _moves = []
-
-            elif key == "u":
-                with suppress(IndexError):
-                    _moves.pop()
-
-            elif key == "g":
-                break
-
-            elif key == ControlButtons.TAB:
-                button = self._get_active_button(_buttons)
-
-                if button and _buttons.index(button) != len(_buttons) - 1:
-                    _buttons[_buttons.index(button)].selected = False
-
-                    _buttons[_buttons.index(button) + 1].selected = True
-
-            elif key == ControlButtons.BACK_TAB:
-                button = self._get_active_button(_buttons)
-
-                if button and _buttons.index(button) != 0:
-                    _buttons[_buttons.index(button)].selected = False
-
-                    _buttons[_buttons.index(button) - 1].selected = True
-
-        return _moves
-
-    def run(self, screen: Screen) -> None:
-        """Runs the game"""
-        self.screen = screen
-        moves = self._get_moves()
-        l1 = Level(self.screen)
-        l1.run(moves)
-
-        print(moves)
+if __name__ == "__main__":
+    Screen.wrapper(GameScene, catch_interrupt=True)
