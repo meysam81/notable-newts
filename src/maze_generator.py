@@ -9,6 +9,7 @@ pygame.init()
 
 class Tile:
     """The tiles that levels are based on"""
+
     def __init__(self, passable: bool = True, enemy: bool = False):
         # we could have different terrains like water to spice up the level design
         self.passable = passable
@@ -22,7 +23,8 @@ s_s = 60
 grid = [[Tile() for i in range(9)] for j in range(9)]
 
 
-def select_square():
+def select_square() -> None:
+    """Selects squares"""
     selected = True
     selected_tool = add_obstacle
     while True:
@@ -85,20 +87,24 @@ def select_square():
         selected = True
 
 
-def add_obstacle(pos):
+def add_obstacle(pos: list) -> None:
+    """Adds obstacles"""
     grid[pos[0]][pos[1]].passable = False
 
 
-def remove(pos):
+def remove(pos: list) -> None:
+    """Removes obstacles"""
     grid[pos[0]][pos[1]].passable = True
     grid[pos[0]][pos[1]].enemy = False
 
 
-def add_enemy(pos):
+def add_enemy(pos: list) -> None:
+    """Adds enemies"""
     grid[pos[0]][pos[1]].enemy = True
 
 
-def draw():
+def draw() -> None:
+    """Shows screen"""
     x, y = 0, 0
     for row in range(len(grid)):
         for col in range(len(grid[row])):
