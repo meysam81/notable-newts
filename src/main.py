@@ -4,10 +4,10 @@ from asciimatics.exceptions import ResizeScreenError
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 
-from game import GameScene
-from main_menu import MainMenuScene
 from end_screen import EndScreenScene
+from game import GameScene
 from level_screen import LevelSelectScene
+from main_menu import MainMenuScene
 
 
 def start(screen: Screen, scene: Scene) -> None:
