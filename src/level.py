@@ -33,10 +33,12 @@ class Level:
         self.screen.draw(self.x_pad, self.y_pad, char="*")
 
     def draw_path(self) -> None:
+        """Draws path"""
         for (x, y) in self.path_taken:
             self.screen.highlight(x, y, 1, 1, None, COLOUR_RED)
 
-    def run(self, moves: List[str]):
+    def run(self, moves: List[str]) -> None:
+        """Runs moves"""
         self.screen.clear()
 
         for m in moves:

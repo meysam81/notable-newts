@@ -1,6 +1,7 @@
 import sys
 
 from asciimatics.exceptions import ResizeScreenError
+from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 
 from game import GameScene
@@ -9,12 +10,13 @@ from end_screen import EndScreenScene
 from level_screen import LevelSelectScene
 
 
-def start(screen, scene):
+def start(screen: Screen, scene: Scene) -> None:
+    """Starts game scenes"""
     scenes = []
     scenes.append(MainMenuScene(screen))  # name = "mainMenu"
     scenes.append(GameScene(screen))  # name = "game"
-    scenes.append(EndScreenScene(screen)) # name="endScreen"
-    scenes.append(LevelSelectScene(screen)) # name="levelSelect"
+    scenes.append(EndScreenScene(screen))  # name="endScreen"
+    scenes.append(LevelSelectScene(screen))  # name="levelSelect"
     screen.play(scenes, stop_on_resize=True, start_scene=scene, allow_int=True)
 
 

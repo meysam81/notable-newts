@@ -12,14 +12,10 @@ text_colour = Screen.COLOUR_WHITE
 
 
 class MainMenuFrame(Frame):
-    """
-    Class that will show the main menu
-    """
+    """Class that will show the main menu"""
 
-    def __init__(self, screen):
-        """
-        Here the frame with all layouts and widgets is created
-        """
+    def __init__(self, screen: Screen):
+        """Here the frame with all layouts and widgets is created"""
         # The settings for the frame in which the layouts are displayed
         super(MainMenuFrame, self).__init__(screen,
                                             screen.height,
@@ -66,24 +62,22 @@ class MainMenuFrame(Frame):
         layout3.add_widget(Button("Exit", self._quit), 0)
         self.fix()
 
-    def _play(self):
-        """
-        When the player chooses play, start the game
-        """
+    def _play(self) -> None:
+        """When the player chooses play, start the game"""
         raise NextScene('game')
 
-    def _levelSelect(self):
-        """
-        When the player chooses levels, display the level selection screen
-        """
+    def _levelSelect(self) -> None:
+        """When the player chooses levels, display the level selection screen"""
         raise NextScene('levelSelect')
 
     @staticmethod
-    def _quit():
+    def _quit() -> None:
         raise StopApplication("User pressed quit")
 
 
 class MainMenuScene(Scene):
+    """Main menu"""
+
     def __init__(self, screen: Screen):
         effects = [
             Print(screen,

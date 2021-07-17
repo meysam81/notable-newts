@@ -1,5 +1,5 @@
 from asciimatics.effects import Print
-from asciimatics.exceptions import StopApplication, NextScene
+from asciimatics.exceptions import NextScene
 from asciimatics.renderers import Box, FigletText
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
@@ -83,16 +83,16 @@ class EndScreen(Frame):
         # Call game scene with level +1 ?
         raise NextScene('game')
 
-
     def _menu(self) -> None:
         raise NextScene('mainMenu')
-
 
     def _reset(self) -> None:
         raise NextScene('game')
 
 
 class EndScreenScene(Scene):
+    """End screen scene"""
+
     def __init__(self, screen: Screen):
         width = 70
         height = 20
@@ -101,7 +101,7 @@ class EndScreenScene(Scene):
         time = 12.3
 
         state = True
-        
+
         x_start = (screen.width - width)//2
         y_start = (screen.height - height)//2
 
@@ -142,6 +142,7 @@ class EndScreenScene(Scene):
             clear,
             name
         )
+
 
 if __name__ == "__main__":
     Screen.wrapper(EndScreenScene, catch_interrupt=True)

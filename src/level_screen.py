@@ -1,15 +1,15 @@
 import os
 
 from asciimatics.effects import Print
-from asciimatics.exceptions import StopApplication, NextScene
-from asciimatics.renderers import Box, FigletText
+from asciimatics.exceptions import NextScene
+from asciimatics.renderers import FigletText
 from asciimatics.scene import Scene
 from asciimatics.screen import Screen
 from asciimatics.widgets import Button, Frame, Label, Layout
 
 from config import root_dir
 
-MAZE_LOC = (root_dir / fr"docs/mazes").absolute()
+MAZE_LOC = (root_dir / r"docs/mazes").absolute()
 
 TEXT_COLOUR = Screen.COLOUR_WHITE
 
@@ -60,7 +60,6 @@ class LevelScreen(Frame):
             "title": (TEXT_COLOUR, screen.A_NORMAL, screen.COLOUR_BLACK),
         }
 
-
         levels = len(os.listdir(MAZE_LOC))
 
         rows = levels//4
@@ -69,22 +68,21 @@ class LevelScreen(Frame):
 
         bottom = Layout([2])
 
-        if levels%4:
-            layouts.append(Layout([1]*(levels%4)))
+        if levels % 4:
+            layouts.append(Layout([1]*(levels % 4)))
 
         for layout in layouts:
             self.add_layout(layout)
 
         self.add_layout(bottom)
 
-
-        if levels%4:
+        if levels % 4:
             j = 0
             for j in range(len(layouts) - 1):
                 for i in range(4):
                     layouts[j].add_widget(Button(f"Level {j*4+i}", lambda i=j*4+i: self._level(i)), i)
 
-            for i in range(levels%4):
+            for i in range(levels % 4):
                 layouts[-1].add_widget(Button(f"Level {j*4 + i}", lambda i=j*4+i: self._level(i)), i)
 
         else:
@@ -94,10 +92,10 @@ class LevelScreen(Frame):
 
         bottom.add_widget(Label(""), 0)
         bottom.add_widget(Button("Exit", self._quit), 0)
-        
+
         self.fix()
 
-    def _level(self, num) -> None:
+    def _level(self, num: int) -> None:
         # To be added
         print(num)
         raise NextScene("game")
@@ -108,10 +106,12 @@ class LevelScreen(Frame):
 
 
 class LevelSelectScene(Scene):
+    """Level scene"""
+
     def __init__(self, screen: Screen):
         s_width = max(map(len, str(FigletText("Level Select", font='small')).split("\n")))
         s_height = len(str(FigletText("Level Select", font='small')).split("\n"))
-        
+
         effects = [Print(
             screen,
             FigletText("Level Select", font='small'),
@@ -133,5 +133,6 @@ class LevelSelectScene(Scene):
             name
         )
 
+
 if __name__ == "__main__":
-    Screen.wrapper(LevelSelectScreen, catch_interrupt=True)
+    Screen.wrapper(LevelSelectScene, catch_interrupt=True)

@@ -13,10 +13,10 @@ TEXT_COLOUR = Screen.COLOUR_WHITE
 
 
 class GameFrame(Frame):
+    """Game frame"""
+
     def __init__(self, screen: Screen):
-        """
-        Here the frame with the undo, reset and go button is created
-        """
+        """Here the frame with the undo, reset and go button is created"""
         # The settings for the frame in which the layouts are displayed
         super(GameFrame, self).__init__(
             screen,
@@ -64,13 +64,11 @@ class GameFrame(Frame):
         layout.add_widget(self.input_field, 0)
         self.fix()
 
-    def _main_menu(self):
+    def _main_menu(self) -> None:
         raise NextScene("mainMenu")
 
-    def _go(self):
-        """
-        start the level simulator
-        """
+    def _go(self) -> None:
+        """Start the level simulator"""
         # TODO: add functionality
         level = Level(self.screen)
         level.run([x for x in self.input_field.value if x != ''])
@@ -78,6 +76,8 @@ class GameFrame(Frame):
 
 
 class GameScene(Scene):
+    """Game scene"""
+
     def __init__(self, screen: Screen):
         effects = [
             Print(screen,
