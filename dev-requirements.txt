@@ -3,7 +3,7 @@
 # This list will have to be migrated if you wish to use another dependency manager.
 
 # Base tools
-flake8~=3.7
+flake8~=7.3
 isort~=5.9
 pre-commit~=2.13.0
 
